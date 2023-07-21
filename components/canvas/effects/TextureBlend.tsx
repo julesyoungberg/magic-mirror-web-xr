@@ -15,7 +15,7 @@ const fragmentShader = `
 
 // Effect implementation
 class TextureBlendImpl extends Effect {
-    constructor(texture: WebGLTexture, mix: number, flipX: boolean) {
+    constructor(texture: WebGLTexture | null, mix: number, flipX: boolean) {
         super("TextureBlend", fragmentShader, {
             blendFunction: BlendFunction.SET,
             uniforms: new Map([
@@ -28,7 +28,7 @@ class TextureBlendImpl extends Effect {
 }
 
 type Props = {
-    texture: WebGLTexture;
+    texture?: WebGLTexture;
     mix: number;
     flipX?: boolean;
 };
@@ -37,7 +37,7 @@ type Props = {
 export const TextureBlend = forwardRef(
     ({ texture, mix, flipX = false }: Props, ref) => {
         const effect = useMemo(
-            () => new TextureBlendImpl(texture, mix, flipX),
+            () => new TextureBlendImpl(texture || null, mix, flipX),
             [texture]
         );
 

@@ -8,10 +8,9 @@ float radial(vec2 pos, float radius) {
     return fresult;
 }
 
-void mainImage(const in vec4 inputColor, const in vec2 uv, out vec4 outputColor) {
+void mainUv(inout vec2 uv) {
     vec2 c_uv = uv * 2.0 - 1.0;
     vec2 o_uv = uv * 0.8;
     float gradient = radial(c_uv, time*0.8);
-    vec2 fUv = mix(uv, o_uv, gradient);
-    outputColor = texture(inputBuffer, fUv);
+    uv = mix(uv, o_uv, gradient);
 }

@@ -7,6 +7,7 @@ import { useCallback, useRef } from "react";
 import ConditionalWrapper from "../helpers/ConditionalWrapper";
 import XRWrapper from "./XRWrapper";
 import { SceneInner } from "./SceneInner";
+import WebcamProvider from "./WebcamProvider";
 
 export default function Scene() {
     // @todo check for support
@@ -21,12 +22,16 @@ export default function Scene() {
         <div style={{ width: "100%", aspectRatio: 16 / 9 }}>
             {supportsXR && <ARButton />}
             <Canvas>
-                <ConditionalWrapper
-                    predicate={supportsXR}
-                    wrapper={(children) => <XRWrapper>{children}</XRWrapper>}
-                >
-                    <SceneInner />
-                </ConditionalWrapper>
+                <WebcamProvider>
+                    <ConditionalWrapper
+                        predicate={supportsXR}
+                        wrapper={(children) => (
+                            <XRWrapper>{children}</XRWrapper>
+                        )}
+                    >
+                        <SceneInner />
+                    </ConditionalWrapper>
+                </WebcamProvider>
             </Canvas>
         </div>
     );

@@ -7,7 +7,6 @@ import fragmentShader from "./shader.frag";
 class NoiseDisplaceImpl extends Effect {
     constructor() {
         super("NoiseDisplace", fragmentShader, {
-            attributes: EffectAttribute.CONVOLUTION,
             blendFunction: BlendFunction.SET,
         });
     }
