@@ -1,15 +1,17 @@
+import { CanvasTexture, initCanvasTexture } from "@/hooks/useCanvasTexture";
 import { useFrame } from "@react-three/fiber";
 import React, { useMemo } from "react";
-import * as THREE from "three";
 
-function initWebcam() {
+export const VIDEO_SIZE = { width: 512, height: 360 };
+
+function initWebcamVideo() {
     const video = document.createElement("video");
-    const constraints = { video: { width: 1280, height: 720 } };
+    const constraints = { video: VIDEO_SIZE };
     navigator.mediaDevices
         .getUserMedia(constraints)
         .then((mediaStream) => {
             video.srcObject = mediaStream;
-            video.onloadedmetadata = (e) => {
+            video.onloadedmetadata = () => {
                 video.setAttribute("autoplay", "true");
                 video.setAttribute("playsinline", "true");
                 video.play();
@@ -18,25 +20,12 @@ function initWebcam() {
         .catch((err) => {
             alert(err.name + ": " + err.message);
         });
-    const canvas = document.createElement("canvas");
-    canvas.width = 512;
-    canvas.height = 512;
-    const canvasCtx = canvas.getContext("2d");
-    if (!canvasCtx) {
-        throw new Error("failed to get 2d canvas context");
-    }
-    canvasCtx.fillStyle = "#000000";
-    canvasCtx.fillRect(0, 0, canvas.width, canvas.height);
-    const texture = new THREE.Texture(canvas);
-    return {
-        canvas,
-        canvasCtx,
-        texture,
-        video,
-    };
+    return video;
 }
 
-export type Webcam = ReturnType<typeof initWebcam>;
+export type Webcam = CanvasTexture & {
+    video: HTMLVideoElement;
+};
 
 export const WebcamContext = React.createContext<Webcam | null>(null);
 
@@ -44,7 +33,10 @@ type Props = React.PropsWithChildren<{}>;
 
 export default function WebcamProvider({ children }: Props) {
     const webcam = useMemo(() => {
-        return initWebcam();
+        return {
+            video: initWebcamVideo(),
+            ...initCanvasTexture(VIDEO_SIZE),
+        };
     }, []);
 
     useFrame(() => {
