@@ -13,12 +13,14 @@ import { useBodyPix } from "@/hooks/useBodyPix";
 import { useBodyPixMask } from "@/hooks/useBodyPixMask";
 import { useHolisticDebug } from "@/hooks/useHolisticDebug";
 import { useHolisticDetector } from "@/hooks/useHolisticDetector";
+import { useSegmentation } from "@/hooks/useSegmentation";
 
 export default function FrameProcessor() {
     // const { canvasTexture, drawMask } = useBodyPixMask();
     // useBodyPix(drawMask);
-    const { canvasTexture, drawFeatures } = useHolisticDebug();
-    useHolisticDetector(drawFeatures);
+    // const { canvasTexture, drawFeatures } = useHolisticDebug();
+    // useHolisticDetector(drawFeatures);
+    const canvasTexture = useSegmentation();
 
     return (
         <EffectComposer>

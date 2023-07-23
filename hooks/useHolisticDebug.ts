@@ -28,6 +28,17 @@ export function useHolisticDebug() {
                     canvasTexture.canvas.height
                 );
             }
+            if (results.segmentationMask) {
+                canvasTexture.canvasCtx.globalCompositeOperation = "multiply";
+                canvasTexture.canvasCtx.drawImage(
+                    results.segmentationMask,
+                    0,
+                    0,
+                    canvasTexture.canvas.width,
+                    canvasTexture.canvas.height
+                );
+                canvasTexture.canvasCtx.globalCompositeOperation = "overlay";
+            }
             drawLandmarks(canvasTexture.canvasCtx, results.faceLandmarks);
             drawLandmarks(canvasTexture.canvasCtx, results.leftHandLandmarks);
             drawLandmarks(canvasTexture.canvasCtx, results.rightHandLandmarks);
