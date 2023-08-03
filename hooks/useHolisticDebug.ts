@@ -11,7 +11,7 @@ export function useHolisticDebug() {
 
     const drawFeatures = useCallback(
         (results: mpHolistic.Results) => {
-            console.log(results);
+            // console.log(results);
 
             canvasTexture.canvasCtx.clearRect(
                 0,
@@ -29,6 +29,7 @@ export function useHolisticDebug() {
                 );
             }
             if (results.segmentationMask) {
+                canvasTexture.canvasCtx.save();
                 canvasTexture.canvasCtx.globalCompositeOperation = "multiply";
                 canvasTexture.canvasCtx.drawImage(
                     results.segmentationMask,
@@ -37,7 +38,7 @@ export function useHolisticDebug() {
                     canvasTexture.canvas.width,
                     canvasTexture.canvas.height
                 );
-                canvasTexture.canvasCtx.globalCompositeOperation = "overlay";
+                canvasTexture.canvasCtx.restore();
             }
             drawLandmarks(canvasTexture.canvasCtx, results.faceLandmarks);
             drawLandmarks(canvasTexture.canvasCtx, results.leftHandLandmarks);

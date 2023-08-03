@@ -20,7 +20,7 @@ export function useHolisticDetector(
         h.setOptions({
             modelComplexity: 1,
             smoothLandmarks: true,
-            // enableFaceGeometry: true,
+            enableFaceGeometry: true,
             enableSegmentation: true,
             smoothSegmentation: true,
             //mrefineFaceLandmarks: true, // doesn't work with enableFaceGeometry

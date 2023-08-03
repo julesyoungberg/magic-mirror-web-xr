@@ -1,15 +1,12 @@
-import Box from "./Box";
-import Shader from "./Shader";
 import FrameProcessor from "./FrameProcessor";
+import { HolisticDebug } from "./filters/HolisticDebug";
+import { Demo } from "./filters/Demo";
 
 export function SceneInner() {
     return (
         <>
-            <mesh>
-                <boxGeometry />
-                <meshBasicMaterial color="blue" />
-                <Shader />
-            </mesh>
+            {/*<HolisticDebug />*/}
+            <Demo />
             <FrameProcessor />
         </>
     );

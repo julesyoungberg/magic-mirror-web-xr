@@ -41,13 +41,16 @@ export default function WebcamProvider({ children }: Props) {
 
     useFrame(() => {
         if (webcam.video.readyState === webcam.video.HAVE_ENOUGH_DATA) {
+            webcam.canvasCtx.save();
+            webcam.canvasCtx.scale(-1, 1);
             webcam.canvasCtx.drawImage(
                 webcam.video,
                 0,
                 0,
-                webcam.canvas.width,
+                webcam.canvas.width * -1,
                 webcam.canvas.height
             );
+            webcam.canvasCtx.restore();
             webcam.texture.needsUpdate = true;
         }
     }, 1);
