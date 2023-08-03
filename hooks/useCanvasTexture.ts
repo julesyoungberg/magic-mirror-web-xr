@@ -17,6 +17,7 @@ export function initCanvasTexture({ width, height }: CanvasTextureConfig) {
     canvasCtx.fillStyle = "#000000";
     canvasCtx.fillRect(0, 0, canvas.width, canvas.height);
     const texture = new THREE.Texture(canvas);
+    texture.colorSpace = THREE.SRGBColorSpace;
     return { canvas, canvasCtx, texture };
 }
 

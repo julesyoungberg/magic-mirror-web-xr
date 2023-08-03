@@ -90,7 +90,6 @@ export function Demo() {
             const facialTransformationMatrixes =
                 results.facialTransformationMatrixes[0].data;
             transform.matrix.fromArray(facialTransformationMatrixes);
-            transform.matrix.scale(new THREE.Vector3(2, 2, 2));
             transform.matrix.decompose(
                 transform.position,
                 transform.quaternion,
@@ -129,7 +128,7 @@ export function Demo() {
     return (
         <>
             {webcam && <Background texture={webcam.texture} />}
-            <primitive object={gltf.scene} />
+            <primitive object={gltf.scene} scale={2.0} />
         </>
     );
 }
