@@ -29,6 +29,7 @@ export function BoxWall({
     const boxHeight = roomHeight / rows;
     const boxDepth = (boxWidth + boxHeight) * 0.5;
 
+    // @todo fix start position so that boxes are flush with walls
     const startPosition = [
         -roomWidth * 0.5 + boxWidth * 0.5,
         -roomHeight * 0.9 + boxHeight * 0.5,
@@ -42,7 +43,7 @@ export function BoxWall({
                         <BoxWallBox
                             key={`${colIdx}_${rowIdx}`}
                             colIdx={colIdx}
-                            rowIdx={rowIdx}
+                            rowIdx={rows - rowIdx}
                             depthMap={downsampledWebcam}
                             position={[
                                 startPosition[0] + colIdx * boxWidth,

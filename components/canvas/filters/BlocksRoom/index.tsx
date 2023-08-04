@@ -37,8 +37,8 @@ export function BlocksRoom() {
             {/* Back Wall */}
             {/* <Plane position={[0, 0, 0]} rotation={[0, 0, 0]} /> */}
             <BoxWall
-                columns={16}
-                rows={9}
+                columns={64}
+                rows={36}
                 roomHeight={halfRoomHeight * 2}
                 roomWidth={halfRoomWidth * 2}
                 position={[0, 2, 0.5]}
