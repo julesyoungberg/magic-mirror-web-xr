@@ -1,6 +1,7 @@
 import { useWebcam } from "@/hooks/useWebcam";
 import { useDownsamplingCanvas } from "@/hooks/useDownsamplingCanvas";
 import { Box } from "../../primitives/Box";
+import { BoxWallBox } from "./BoxWallBox";
 
 type Props = {
     columns: number;
@@ -30,32 +31,25 @@ export function BoxWall({
 
     const startPosition = [
         -roomWidth * 0.5 + boxWidth * 0.5,
-        -roomHeight * 0.5 + boxWidth * 0.5,
+        -roomHeight * 0.9 + boxHeight * 0.5,
     ];
 
     return (
         <group position={position}>
             {new Array(columns).fill(0).flatMap((_, colIdx) =>
                 new Array(rows).fill(0).map((_, rowIdx) => {
-                    const pixel = downsampledWebcam.canvasCtx.getImageData(
-                        colIdx,
-                        rowIdx,
-                        1,
-                        1
-                    );
-
-                    const brightness =
-                        (pixel.data[0] + pixel.data[1] + pixel.data[2]) / 3;
-
                     return (
-                        <Box
+                        <BoxWallBox
                             key={`${colIdx}_${rowIdx}`}
+                            colIdx={colIdx}
+                            rowIdx={rowIdx}
+                            depthMap={downsampledWebcam}
                             position={[
                                 startPosition[0] + colIdx * boxWidth,
-                                startPosition[0] + rowIdx * boxHeight,
+                                startPosition[1] + rowIdx * boxHeight,
                                 0,
                             ]}
-                            scale={[1, 1, Math.min(brightness, 0.5)]}
+                            scale={[1, 1, Math.random() * 2]}
                             size={[boxWidth, boxHeight, boxDepth]}
                         />
                     );

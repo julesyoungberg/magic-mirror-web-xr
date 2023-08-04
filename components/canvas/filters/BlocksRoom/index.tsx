@@ -8,7 +8,7 @@ export function BlocksRoom() {
     return (
         <>
             <ambientLight intensity={0.5} />
-            <pointLight color="white" position={[0, 0, 2]} />
+            <pointLight color="white" position={[0, 1, 3]} />
 
             {/* Floor */}
             <Plane
@@ -41,7 +41,7 @@ export function BlocksRoom() {
                 rows={9}
                 roomHeight={halfRoomHeight * 2}
                 roomWidth={halfRoomWidth * 2}
-                position={[0, 2, -1]}
+                position={[0, 2, 0.5]}
             />
         </>
     );
