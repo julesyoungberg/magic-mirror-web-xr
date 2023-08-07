@@ -1,13 +1,13 @@
-import { useFlakingLimestoneTexture } from "@/hooks/useFlakingLimestoneTexture";
 import { Plane } from "../../primitives/Plane";
 import { BoxWall } from "./BoxWall";
 import { StandardMaterial } from "../../primitives/StandardMaterial";
+import { useDegradedConcreteTexture } from "@/hooks/useDegradedConcreteTexture";
 
 export function BlocksRoom() {
     const halfRoomHeight = 2.5;
     const halfRoomWidth = 4.44;
 
-    const texture = useFlakingLimestoneTexture();
+    const texture = useDegradedConcreteTexture();
 
     const material = <StandardMaterial {...texture} />;
 

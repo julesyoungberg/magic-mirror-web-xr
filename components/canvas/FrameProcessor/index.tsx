@@ -32,15 +32,15 @@ export default function FrameProcessor() {
                 bokehScale={2}
                 height={480}
             />*/}
-            {/*<Bloom
+            <Bloom
                 luminanceThreshold={0}
                 luminanceSmoothing={0.9}
                 height={300}
-            />*/}
+            />
             {/* <Noise opacity={0.02} /> */}
             {/*<Vignette eskil={false} offset={0.1} darkness={1.1} />*/}
             {/*<Pixelation granularity={10.0} />*/}
-            <NoiseDisplace />
+            {/*<NoiseDisplace />*/}
         </EffectComposer>
     );
 }

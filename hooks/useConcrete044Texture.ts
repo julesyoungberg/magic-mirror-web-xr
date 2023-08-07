@@ -6,11 +6,11 @@ export function useConcrete044Texture() {
 
     // @todo fix paths
     return useTexture({
-        map: getPath("albedo"),
-        displacementMap: getPath("height"),
-        normalMap: getPath("normal-dx"),
-        roughnessMap: getPath("roughness"),
-        aoMap: getPath("ao"),
-        metalnessMap: getPath("metalness"),
+        map: getPath("Color"),
+        displacementMap: getPath("Displacement"),
+        normalMap: getPath("NormalDX"),
+        roughnessMap: getPath("Roughness"),
+        aoMap: getPath("AmbientOcclusion"),
+        metalnessMap: getPath("Metalness"),
     });
 }

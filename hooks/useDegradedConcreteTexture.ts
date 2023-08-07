@@ -2,7 +2,7 @@ import { useTexture } from "@react-three/drei";
 
 export function useDegradedConcreteTexture() {
     const getPath = (dataType: string) =>
-        `./textures/degraded-concreate/degraded-concrete_${dataType}.png`;
+        `./textures/degraded-concrete/degraded-concrete_${dataType}.png`;
 
     return useTexture({
         map: getPath("albedo"),
@@ -10,6 +10,6 @@ export function useDegradedConcreteTexture() {
         normalMap: getPath("normal-dx"),
         roughnessMap: getPath("roughness"),
         aoMap: getPath("ao"),
-        metalnessMap: getPath("metalness"),
+        metalnessMap: getPath("metallic"),
     });
 }
