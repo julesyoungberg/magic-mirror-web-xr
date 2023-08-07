@@ -1,8 +1,6 @@
 import { useWebcam } from "@/hooks/useWebcam";
 import { useDownsamplingCanvas } from "@/hooks/useDownsamplingCanvas";
-import { Box } from "../../primitives/Box";
 import { BoxWallBox } from "./BoxWallBox";
-import { StandardMaterialProps } from "../../primitives/StandardMaterial";
 
 type Props = {
     columns: number;
@@ -10,7 +8,7 @@ type Props = {
     roomHeight: number;
     roomWidth: number;
     position: [number, number, number];
-    materialProps?: StandardMaterialProps;
+    materialNode?: JSX.Element;
 };
 
 export function BoxWall({
@@ -19,7 +17,7 @@ export function BoxWall({
     roomHeight,
     roomWidth,
     position,
-    materialProps,
+    materialNode,
 }: Props) {
     const webcam = useWebcam();
     const downsampledWebcam = useDownsamplingCanvas(
@@ -55,7 +53,7 @@ export function BoxWall({
                             ]}
                             scale={[1, 1, Math.random() * 2]}
                             size={[boxWidth, boxHeight, boxDepth]}
-                            materialProps={materialProps}
+                            materialNode={materialNode}
                         />
                     );
                 })

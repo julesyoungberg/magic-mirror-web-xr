@@ -10,6 +10,6 @@ export function useFlakingLimestoneTexture() {
         normalMap: getPath("normal"),
         roughnessMap: getPath("roughness"),
         aoMap: getPath("ao"),
-        // metalnessMap: getPath("metalness"),
+        metalnessMap: getPath("metalness"),
     });
 }

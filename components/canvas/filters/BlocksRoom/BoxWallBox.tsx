@@ -2,13 +2,12 @@ import { CanvasTexture } from "@/hooks/useCanvasTexture";
 import { Box, BoxProps } from "../../primitives/Box";
 import { useFrame } from "@react-three/fiber";
 import { useRef } from "react";
-import { StandardMaterialProps } from "../../primitives/StandardMaterial";
 
 type Props = Omit<BoxProps, "meshRef"> & {
     colIdx: number;
     rowIdx: number;
     depthMap: CanvasTexture;
-    materialProps?: StandardMaterialProps;
+    materialNde?: JSX.Element;
 };
 
 export function BoxWallBox({ colIdx, rowIdx, depthMap, ...boxProps }: Props) {

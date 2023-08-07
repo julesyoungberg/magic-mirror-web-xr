@@ -3,12 +3,12 @@ import { StandardMaterial, StandardMaterialProps } from "./StandardMaterial";
 
 export type PlaneProps = MeshProps & {
     size?: [number, number];
-    materialProps?: StandardMaterialProps;
+    materialNode?: JSX.Element;
 };
 
 export function Plane({
     size = [10, 10],
-    materialProps,
+    materialNode,
     ...meshProps
 }: PlaneProps) {
     return (
@@ -19,7 +19,7 @@ export function Plane({
             {...meshProps}
         >
             <planeGeometry attach="geometry" args={size} />
-            <StandardMaterial {...materialProps} />
+            {materialNode || <StandardMaterial />}
         </mesh>
     );
 }
