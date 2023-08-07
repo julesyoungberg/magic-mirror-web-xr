@@ -1,14 +1,14 @@
-import * as THREE from "three";
-import { Color, MeshProps } from "@react-three/fiber";
+import { MeshProps } from "@react-three/fiber";
+import { StandardMaterial, StandardMaterialProps } from "./StandardMaterial";
 
 export type PlaneProps = MeshProps & {
-    color?: Color;
     size?: [number, number];
+    materialProps?: StandardMaterialProps;
 };
 
 export function Plane({
-    color = "grey",
     size = [10, 10],
+    materialProps,
     ...meshProps
 }: PlaneProps) {
     return (
@@ -19,11 +19,7 @@ export function Plane({
             {...meshProps}
         >
             <planeGeometry attach="geometry" args={size} />
-            <meshStandardMaterial
-                attach="material"
-                color={color}
-                args={[{ side: THREE.DoubleSide }]}
-            />
+            <StandardMaterial {...materialProps} />
         </mesh>
     );
 }

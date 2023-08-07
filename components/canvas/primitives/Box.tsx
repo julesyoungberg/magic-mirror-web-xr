@@ -1,22 +1,23 @@
 import React, { MutableRefObject } from "react";
-import { Color, MeshProps } from "@react-three/fiber";
+import { MeshProps } from "@react-three/fiber";
+import { StandardMaterial, StandardMaterialProps } from "./StandardMaterial";
 
 export type BoxProps = MeshProps & {
-    color?: Color;
     size?: [number, number, number];
     meshRef?: MutableRefObject<THREE.Mesh | null>;
+    materialProps?: StandardMaterialProps;
 };
 
 export function Box({
-    color = "grey",
     size = [1, 1, 1],
     meshRef,
+    materialProps,
     ...meshProps
 }: BoxProps) {
     return (
         <mesh castShadow receiveShadow ref={meshRef} {...meshProps}>
             <boxGeometry args={size} />
-            <meshStandardMaterial attach="material" color={color} />
+            <StandardMaterial {...materialProps} />
         </mesh>
     );
 }

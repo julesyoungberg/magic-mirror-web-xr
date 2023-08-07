@@ -1,9 +1,12 @@
+import { useFlakingLimestoneTexture } from "@/hooks/useFlakingLimestoneTexture";
 import { Plane } from "../../primitives/Plane";
 import { BoxWall } from "./BoxWall";
 
 export function BlocksRoom() {
     const halfRoomHeight = 2.5;
     const halfRoomWidth = 4.44;
+
+    const texture = useFlakingLimestoneTexture();
 
     return (
         <>
@@ -14,24 +17,28 @@ export function BlocksRoom() {
             <Plane
                 position={[0, -halfRoomHeight, 0]}
                 rotation={[Math.PI / 2, 0, 0]}
+                materialProps={texture}
             />
 
             {/* Ceiling */}
             <Plane
                 position={[0, halfRoomHeight, 0]}
                 rotation={[-Math.PI / 2, 0, 0]}
+                materialProps={texture}
             />
 
             {/* Left Wall */}
             <Plane
                 position={[-halfRoomWidth, 0, 0]}
                 rotation={[0, Math.PI / 2, 0]}
+                materialProps={texture}
             />
 
             {/* Right Wall */}
             <Plane
                 position={[halfRoomWidth, 0, 0]}
                 rotation={[0, -Math.PI / 2, 0]}
+                materialProps={texture}
             />
 
             {/* Back Wall */}
@@ -42,6 +49,7 @@ export function BlocksRoom() {
                 roomHeight={halfRoomHeight * 2}
                 roomWidth={halfRoomWidth * 2}
                 position={[0, 2, 0.5]}
+                materialProps={texture}
             />
         </>
     );
