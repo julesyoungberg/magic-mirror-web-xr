@@ -18,8 +18,8 @@ export function Plane({
             position={[0, -1, 0]}
             {...meshProps}
         >
-            <planeGeometry attach="geometry" args={size} />
-            {materialNode || <StandardMaterial />}
+            <planeGeometry args={size} attach="geometry" />
+            {materialNode ?? <StandardMaterial />}
         </mesh>
     );
 }

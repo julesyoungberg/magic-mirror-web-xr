@@ -1,6 +1,4 @@
-import Loading from "@/components/dom/Loading";
 import Scene from "@/components/canvas/Scene";
-import { Suspense } from "react";
 
 export default function Home() {
     return (

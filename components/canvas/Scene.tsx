@@ -7,6 +7,7 @@ import ConditionalWrapper from "../helpers/ConditionalWrapper";
 import XRWrapper from "./XRWrapper";
 import { SceneInner } from "./SceneInner";
 import WebcamProvider from "./WebcamProvider";
+import FrameProcessor from "./FrameProcessor";
 
 export default function Scene() {
     // @todo check for support
@@ -24,6 +25,7 @@ export default function Scene() {
                         )}
                     >
                         <SceneInner />
+                        <FrameProcessor />
                     </ConditionalWrapper>
                 </WebcamProvider>
             </Canvas>

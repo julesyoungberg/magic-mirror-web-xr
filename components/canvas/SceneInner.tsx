@@ -1,15 +1,24 @@
-import FrameProcessor from "./FrameProcessor";
-import { HolisticDebug } from "./filters/HolisticDebug";
-import { Demo } from "./filters/Demo";
-import { BlocksRoom } from "./filters/BlocksRoom";
+import { HolisticDebug } from "./scenes/HolisticDebug";
+import { FaceMeshDemo } from "./scenes/FaceMeshDemo";
+import { BlocksRoom } from "./scenes/BlocksRoom";
+import { TextureDemo } from "./scenes/TextureDemo";
 
-export function SceneInner() {
-    return (
-        <>
-            {/*<HolisticDebug />*/}
-            {/*<Demo />*/}
-            <BlocksRoom />
-            <FrameProcessor />
-        </>
-    );
+const DEFAULT_SCENE = "blocks";
+
+const SCENES = {
+    texture_demo: TextureDemo,
+    holistic_debug: HolisticDebug,
+    face_mesh_demo: FaceMeshDemo,
+    blocks: BlocksRoom,
+};
+
+type Scene = keyof typeof SCENES;
+
+type Props = {
+    scene?: keyof typeof SCENES;
+};
+
+export function SceneInner({ scene = DEFAULT_SCENE }: Props) {
+    const Scene = SCENES[scene];
+    return <Scene />;
 }

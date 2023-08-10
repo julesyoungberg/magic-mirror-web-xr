@@ -6,7 +6,7 @@ export function useDegradedConcreteTexture() {
 
     return useTexture({
         map: getPath("albedo"),
-        displacementMap: getPath("height"),
+        // displacementMap: getPath("height"),
         normalMap: getPath("normal-dx"),
         roughnessMap: getPath("roughness"),
         aoMap: getPath("ao"),

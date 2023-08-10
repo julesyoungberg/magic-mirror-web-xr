@@ -44,7 +44,9 @@ export function BoxWall({
                         <BoxWallBox
                             key={`${colIdx}_${rowIdx}`}
                             colIdx={colIdx}
+                            columns={columns}
                             rowIdx={rows - rowIdx - 1}
+                            rows={rows}
                             depthMap={downsampledWebcam}
                             position={[
                                 startPosition[0] + colIdx * boxWidth,

@@ -16,8 +16,8 @@ export function Box({
 }: BoxProps) {
     return (
         <mesh castShadow receiveShadow ref={meshRef} {...meshProps}>
-            <boxGeometry args={size} />
-            {materialNode || <StandardMaterial />}
+            <boxGeometry args={size} attach="geometry" />
+            {materialNode ?? <StandardMaterial />}
         </mesh>
     );
 }

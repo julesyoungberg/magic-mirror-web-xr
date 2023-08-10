@@ -61,7 +61,7 @@ const blendshapesMap = {
 };
 
 // based on https://github.com/mrdoob/three.js/blob/master/examples/webgl_morphtargets_webcam.html
-export function Demo() {
+export function FaceMeshDemo() {
     const webcam = useWebcam();
     const { scene } = useThree();
 
