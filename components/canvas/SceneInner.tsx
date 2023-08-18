@@ -1,24 +1,10 @@
-import { HolisticDebug } from "./scenes/HolisticDebug";
-import { FaceMeshDemo } from "./scenes/FaceMeshDemo";
-import { BlocksRoom } from "./scenes/BlocksRoom";
-import { TextureDemo } from "./scenes/TextureDemo";
-
-const DEFAULT_SCENE = "blocks";
-
-const SCENES = {
-    texture_demo: TextureDemo,
-    holistic_debug: HolisticDebug,
-    face_mesh_demo: FaceMeshDemo,
-    blocks: BlocksRoom,
-};
-
-type Scene = keyof typeof SCENES;
+import { Scene, SCENES } from "./scenes";
 
 type Props = {
-    scene?: keyof typeof SCENES;
+    scene: Scene;
 };
 
-export function SceneInner({ scene = DEFAULT_SCENE }: Props) {
+export function SceneInner({ scene }: Props) {
     const Scene = SCENES[scene];
     return <Scene />;
 }
