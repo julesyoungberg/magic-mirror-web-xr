@@ -1,7 +1,5 @@
 "use client";
 
-import { ARCanvas, ARMarker } from "@artcom/react-three-arjs";
-import { Canvas } from "@react-three/fiber";
 import { ARButton } from "@react-three/xr";
 
 import ConditionalWrapper from "../helpers/ConditionalWrapper";
@@ -10,6 +8,7 @@ import { SceneInner } from "./SceneInner";
 import WebcamProvider from "./WebcamProvider";
 import FrameProcessor from "./FrameProcessor";
 import { DEFAULT_SCENE } from "./scenes";
+import { Canvas } from "./Canvas";
 
 export default function Scene() {
     const scene = DEFAULT_SCENE;
@@ -19,7 +18,7 @@ export default function Scene() {
     return (
         <div style={{ width: "100%", aspectRatio: 16 / 9 }}>
             {supportsXR && <ARButton />}
-            <ARCanvas>
+            <Canvas scene={scene}>
                 <WebcamProvider>
                     <ConditionalWrapper
                         predicate={supportsXR}
@@ -31,7 +30,7 @@ export default function Scene() {
                         <FrameProcessor />
                     </ConditionalWrapper>
                 </WebcamProvider>
-            </ARCanvas>
+            </Canvas>
         </div>
     );
 }

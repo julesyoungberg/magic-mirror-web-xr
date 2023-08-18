@@ -5,10 +5,16 @@ export function ARDemo() {
         <>
             <ambientLight />
             <pointLight position={[10, 10, 0]} />
-            <ARMarker type="pattern" patternUrl="data/hiro.patt">
+            <ARMarker
+                type="pattern"
+                patternUrl="data/patt.hiro"
+                onMarkerFound={() => {
+                    console.log("Marker Found");
+                }}
+            >
                 <mesh>
-                    <boxBufferGeometry args={[1, 1, 1]} />
-                    <meshStandardMaterial color="green" />
+                    <boxGeometry attach="geometry" args={[1, 1, 1]} />
+                    <meshStandardMaterial attach="material" color="green" />
                 </mesh>
             </ARMarker>
         </>
