@@ -9,6 +9,7 @@
         "lint": "next lint"
     },
     "dependencies": {
+        "@ar-js-org/ar.js": "^3.4.5",
         "@artcom/react-three-arjs": "^0.5.5",
         "@geist-ui/core": "^2.3.8",
         "@mediapipe/drawing_utils": "^0.3.1675466124",

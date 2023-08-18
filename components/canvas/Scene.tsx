@@ -27,7 +27,7 @@ export default function Scene() {
                         )}
                     >
                         <SceneInner scene={scene} />
-                        <FrameProcessor />
+                        <FrameProcessor scene={scene} />
                     </ConditionalWrapper>
                 </WebcamProvider>
             </Canvas>

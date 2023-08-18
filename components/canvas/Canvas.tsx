@@ -1,7 +1,7 @@
 import React from "react";
-import { ARCanvas } from "@artcom/react-three-arjs";
 import { Canvas as FiberCanvas } from "@react-three/fiber";
 
+import { ARCanvas } from "./ar/ARCanvas";
 import { Scene } from "./scenes";
 
 type Props = React.PropsWithChildren<{

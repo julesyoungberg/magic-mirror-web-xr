@@ -15,8 +15,14 @@ import { useBodyPixMask } from "@/hooks/useBodyPixMask";
 import { useHolisticDebug } from "@/hooks/useHolisticDebug";
 import { useHolisticDetector } from "@/hooks/useHolisticDetector";
 import { useSegmentation } from "@/hooks/useSegmentation";
+import { Scene } from "../scenes";
+import { MirrorX } from "../effects/MirrorX";
 
-export default function FrameProcessor() {
+type Props = {
+    scene: Scene;
+};
+
+export default function FrameProcessor({ scene }: Props) {
     // const { canvasTexture, drawMask } = useBodyPixMask();
     // useBodyPix(drawMask);
     // const { canvasTexture, drawFeatures } = useHolisticDebug();
@@ -25,6 +31,7 @@ export default function FrameProcessor() {
 
     return (
         <EffectComposer>
+            {/*scene.startsWith("ar_") ? <MirrorX /> : <></>*/}
             {/*<TextureBackground texture={canvasTexture.texture} flipX />*/}
             {/*<DepthOfField
                 focusDistance={0}

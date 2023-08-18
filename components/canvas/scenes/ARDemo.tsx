@@ -1,4 +1,4 @@
-import { ARMarker } from "@artcom/react-three-arjs";
+import { ARMarker } from "../ar/ARMarker";
 
 export function ARDemo() {
     return (
