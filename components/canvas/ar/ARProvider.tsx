@@ -1,7 +1,7 @@
 // adapted from https://github.com/artcom/react-three-arjs/blob/main/src/ar/ar.js
 /* eslint-disable import/named */
 import { ArToolkitContext } from "@ar-js-org/ar.js/three.js/build/ar-threex";
-import { useFrame, useThree } from "@react-three/fiber";
+import { useThree } from "@react-three/fiber";
 import React, { createContext, useCallback, useEffect, useMemo } from "react";
 import { ARSourceProivder } from "./ARSourceProvider";
 import Source, { SourceParameters } from "./Source";
@@ -30,7 +30,7 @@ function _ARProvider({
     onCameraStreamError,
     sourceParams,
 }: Props) {
-    const { gl, camera } = useThree();
+    const { camera } = useThree();
 
     const arContext = useMemo(() => {
         return new ArToolkitContext({
@@ -76,7 +76,7 @@ function _ARProvider({
             arSource.copyElementSizeTo(arContext.arController.canvas);
             camera.projectionMatrix.copy(arContext.getProjectionMatrix());
         },
-        [gl, arContext, camera]
+        [arContext, camera]
     );
 
     const onFrame = useCallback(

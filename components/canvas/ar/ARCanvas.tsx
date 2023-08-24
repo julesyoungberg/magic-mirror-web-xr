@@ -34,9 +34,9 @@ export function ARCanvas({
     detectionMode = "mono_and_matrix",
     cameraParametersUrl = "data/camera_para.dat",
     matrixCodeType = "3x3",
-    sourceType = "webcam",
     onCameraStreamReady,
     onCameraStreamError,
+    sourceParams,
     ...props
 }: Props) {
     return (
@@ -51,10 +51,10 @@ export function ARCanvas({
                     patternRatio={patternRatio}
                     matrixCodeType={matrixCodeType}
                     detectionMode={detectionMode}
-                    sourceType={sourceType}
                     cameraParametersUrl={cameraParametersUrl}
                     onCameraStreamReady={onCameraStreamReady}
                     onCameraStreamError={onCameraStreamError}
+                    sourceParams={sourceParams}
                 >
                     {children}
                 </ARProvider>

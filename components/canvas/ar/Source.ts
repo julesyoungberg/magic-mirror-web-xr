@@ -477,16 +477,16 @@ export default class Source {
             //landscape
             otherElement.style.width = this.domElement.style.width;
             otherElement.style.height = this.domElement.style.height;
-            // otherElement.style.marginLeft = this.domElement.style.marginLeft;
-            // otherElement.style.marginTop = this.domElement.style.marginTop;
+            otherElement.style.marginLeft = this.domElement.style.marginLeft;
+            otherElement.style.marginTop = this.domElement.style.marginTop;
         } else {
             //portrait
             otherElement.style.height = this.domElement.style.height;
-            otherElement.style.width =
+            otherElement.style.width = // this.domElement.style.width;
                 (parseInt(otherElement.style.height) * 4) / 3 + "px";
-            // otherElement.style.marginLeft =
-            //     (window.innerWidth - parseInt(otherElement.style.width)) / 2 +
-            //     "px";
+            otherElement.style.marginLeft =
+                (window.innerWidth - parseInt(otherElement.style.width)) / 2 +
+                "px";
             // otherElement.style.marginTop = 0;
         }
     }
@@ -527,11 +527,12 @@ export default class Source {
             if (arToolkitContext.arController !== null) {
                 this.copyElementSizeTo(arToolkitContext.arController.canvas);
             }
-        } else
+        } else {
             console.assert(
                 false,
                 "unhandled trackingBackend " + trackingBackend
             );
+        }
 
         // UPDATE CAMERA
         if (trackingBackend === "artoolkit") {
@@ -540,10 +541,11 @@ export default class Source {
                     arToolkitContext.getProjectionMatrix()
                 );
             }
-        } else
+        } else {
             console.assert(
                 false,
                 "unhandled trackingBackend " + trackingBackend
             );
+        }
     }
 }
