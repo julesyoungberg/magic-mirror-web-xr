@@ -1,3 +1,4 @@
+// adapted from https://github.com/artcom/react-three-arjs/blob/main/src/ar/arCanvas.js
 import React from "react";
 import { Canvas, CanvasProps, RootState, events } from "@react-three/fiber";
 

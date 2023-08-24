@@ -1,14 +1,35 @@
 import { ArToolkitContext } from "@ar-js-org/ar.js/three.js/build/ar-threex";
 
+export function isVideoElement(
+    element?: HTMLElement | Element
+): element is HTMLVideoElement {
+    return element?.nodeName === "VIDEO";
+}
+
+export function isImageElement(
+    element?: HTMLElement | Element
+): element is HTMLImageElement {
+    return element?.nodeName === "IMG";
+}
+
+export type SourceParameters = {
+    sourceType: "webcam" | "image" | "video";
+    sourceUrl?: string;
+    deviceId?: SVGStringList;
+    sourceWidth: number;
+    sourceHeight: number;
+    displayWidth: number;
+    displayHeight: number;
+};
+
 // adapted from https://github.com/AR-js-org/AR.js/blob/master/three.js/src/threex/arjs-source.js
 export default class Source {
     ready: boolean;
-    domElement: HTMLElement | null;
-    parameters: Record<string, any>;
+    domElement: HTMLImageElement | HTMLVideoElement | null;
+    parameters: SourceParameters;
+    _currentTorchStatus?: boolean;
 
-    constructor(parameters: Record<string, any>) {
-        const _this = this;
-
+    constructor(parameters: Partial<SourceParameters>) {
         this.ready = false;
         this.domElement = null;
 
@@ -16,11 +37,6 @@ export default class Source {
         this.parameters = {
             // type of source - ['webcam', 'image', 'video']
             sourceType: "webcam",
-            // url of the source - valid if sourceType = image|video
-            sourceUrl: null,
-
-            // Device id of the camera to use (optional)
-            deviceId: null,
 
             // resolution of at which we initialize in the source image
             sourceWidth: 640,
@@ -28,42 +44,19 @@ export default class Source {
             // resolution displayed for the source
             displayWidth: 640,
             displayHeight: 480,
+            ...parameters,
         };
-        //////////////////////////////////////////////////////////////////////////////
-        //		setParameters
-        //////////////////////////////////////////////////////////////////////////////
-        setParameters(parameters);
-        function setParameters(parameters: Record<string, any>) {
-            if (parameters === undefined) return;
-            for (const key in parameters) {
-                const newValue = parameters[key];
+    }
 
-                if (newValue === undefined) {
-                    console.warn(
-                        "ArSource: '" + key + "' parameter is undefined."
-                    );
-                    continue;
-                }
-
-                const currentValue = _this.parameters[key];
-
-                if (currentValue === undefined) {
-                    console.warn(
-                        "ArSource: '" +
-                            key +
-                            "' is not a property of this material."
-                    );
-                    continue;
-                }
-
-                _this.parameters[key] = newValue;
-            }
+    onInitialClick() {
+        if (this.domElement && "play" in this.domElement) {
+            this.domElement.play().then(() => {});
         }
     }
 
     init(onReady: () => void, onError: (e: unknown) => void) {
         const _this = this;
-        let domElement: HTMLElement | null = null;
+        let domElement: HTMLImageElement | HTMLVideoElement | null = null;
 
         if (this.parameters.sourceType === "image") {
             domElement = this._initSourceImage(onSourceReady);
@@ -108,6 +101,10 @@ export default class Source {
     }
 
     _initSourceImage(onReady: () => void) {
+        if (!this.parameters.sourceUrl) {
+            throw new Error("sourceUrl is required");
+        }
+
         // TODO make it static
         const domElement = document.createElement("img");
         domElement.src = this.parameters.sourceUrl;
@@ -122,6 +119,10 @@ export default class Source {
     }
 
     _initSourceVideo(onReady: () => void) {
+        if (!this.parameters.sourceUrl) {
+            throw new Error("sourceUrl is required");
+        }
+
         // TODO make it static
         const domElement = document.createElement("video");
         domElement.src = this.parameters.sourceUrl;
@@ -287,6 +288,10 @@ export default class Source {
         }
 
         this.domElement = null;
+
+        document.body.removeEventListener("click", this.onInitialClick, {
+            once: true,
+        });
     }
 
     _disposeSourceImage() {
@@ -395,7 +400,7 @@ export default class Source {
                     },
                 ],
             })
-            .catch(function (error) {
+            .catch(function (error: any) {
                 console.log(error);
             });
     }
@@ -408,12 +413,11 @@ export default class Source {
         return parseInt(this.domElement?.style.height || "0");
     }
 
-    ////////////////////////////////////////////////////////////////////////////////
-    //          handle resize
-    ////////////////////////////////////////////////////////////////////////////////
-
     onResizeElement() {
-        const _this = this;
+        if (!this.domElement) {
+            return;
+        }
+
         const screenWidth = window.innerWidth;
         const screenHeight = window.innerHeight;
 
@@ -424,7 +428,7 @@ export default class Source {
         let sourceHeight: number;
 
         // compute sourceWidth, sourceHeight
-        if (this.domElement?.nodeName === "IMG") {
+        if (isImageElement(this.domElement)) {
             sourceWidth = this.domElement.naturalWidth;
             sourceHeight = this.domElement.naturalHeight;
         } else if (this.domElement?.nodeName === "VIDEO") {
@@ -444,32 +448,24 @@ export default class Source {
             // compute newWidth and set .width/.marginLeft
             const newWidth = sourceAspect * screenHeight;
             this.domElement.style.width = newWidth + "px";
-            this.domElement.style.marginLeft =
-                -(newWidth - screenWidth) / 2 + "px";
+            // this.domElement.style.marginLeft =
+            //     -(newWidth - screenWidth) / 2 + "px";
 
             // init style.height/.marginTop to normal value
             this.domElement.style.height = screenHeight + "px";
-            this.domElement.style.marginTop = "0px";
+            // this.domElement.style.marginTop = "0px";
         } else {
             // compute newHeight and set .height/.marginTop
             const newHeight = 1 / (sourceAspect / screenWidth);
             this.domElement.style.height = newHeight + "px";
-            this.domElement.style.marginTop =
-                -(newHeight - screenHeight) / 2 + "px";
+            // this.domElement.style.marginTop =
+            //     -(newHeight - screenHeight) / 2 + "px";
 
             // init style.width/.marginLeft to normal value
             this.domElement.style.width = screenWidth + "px";
-            this.domElement.style.marginLeft = "0px";
+            // this.domElement.style.marginLeft = "0px";
         }
     }
-    /*
-    copyElementSizeTo = function(otherElement){
-        otherElement.style.width = this.domElement.style.width
-        otherElement.style.height = this.domElement.style.height
-        otherElement.style.marginLeft = this.domElement.style.marginLeft
-        otherElement.style.marginTop = this.domElement.style.marginTop
-    }
-    */
 
     copyElementSizeTo(otherElement: HTMLElement) {
         if (!this.domElement) {
@@ -480,34 +476,26 @@ export default class Source {
             //landscape
             otherElement.style.width = this.domElement.style.width;
             otherElement.style.height = this.domElement.style.height;
-            otherElement.style.marginLeft = this.domElement.style.marginLeft;
-            otherElement.style.marginTop = this.domElement.style.marginTop;
+            // otherElement.style.marginLeft = this.domElement.style.marginLeft;
+            // otherElement.style.marginTop = this.domElement.style.marginTop;
         } else {
             //portrait
             otherElement.style.height = this.domElement.style.height;
             otherElement.style.width =
                 (parseInt(otherElement.style.height) * 4) / 3 + "px";
-            otherElement.style.marginLeft =
-                (window.innerWidth - parseInt(otherElement.style.width)) / 2 +
-                "px";
-            otherElement.style.marginTop = 0;
+            // otherElement.style.marginLeft =
+            //     (window.innerWidth - parseInt(otherElement.style.width)) / 2 +
+            //     "px";
+            // otherElement.style.marginTop = 0;
         }
     }
-
-    //////////////////////////////////////////////////////////////////////////////
-    //		Code Separator
-    //////////////////////////////////////////////////////////////////////////////
 
     copySizeTo() {
         console.warn(
             "obsolete function arToolkitSource.copySizeTo. Use arToolkitSource.copyElementSizeTo"
         );
-        this.copyElementSizeTo.apply(this, arguments);
+        this.copyElementSizeTo.apply(this, arguments as any);
     }
-
-    //////////////////////////////////////////////////////////////////////////////
-    //		Code Separator
-    //////////////////////////////////////////////////////////////////////////////
 
     onResize(
         arToolkitContext: ArToolkitContext,
@@ -518,7 +506,7 @@ export default class Source {
             console.warn(
                 "obsolete function arToolkitSource.onResize. Use arToolkitSource.onResizeElement"
             );
-            return this.onResizeElement.apply(this, arguments);
+            return this.onResizeElement.apply(this, arguments as any);
         }
 
         const trackingBackend = arToolkitContext.parameters.trackingBackend;

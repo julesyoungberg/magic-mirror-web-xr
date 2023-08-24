@@ -1,11 +1,9 @@
+// adapted from https://github.com/artcom/react-three-arjs/blob/main/src/ar/ar.js
 /* eslint-disable import/named */
-import { useWebcam } from "@/hooks/useWebcam";
-import {
-    ArToolkitContext,
-    ArToolkitSource,
-} from "@ar-js-org/ar.js/three.js/build/ar-threex";
+import { ArToolkitContext } from "@ar-js-org/ar.js/three.js/build/ar-threex";
 import { useFrame, useThree } from "@react-three/fiber";
 import React, { createContext, useCallback, useEffect, useMemo } from "react";
+import ArToolkitSource from "./Source";
 
 export const ARContext = createContext<{ arToolkitContext?: ArToolkitContext }>(
     {}
@@ -35,11 +33,10 @@ function _ARProvider({
     onCameraStreamReady,
     onCameraStreamError,
 }: Props) {
-    const webcam = useWebcam();
     const { gl, camera } = useThree();
 
     const arContext = useMemo(() => {
-        //  const arToolkitSource = new ArToolkitSource({ sourceType });
+        const arToolkitSource = new ArToolkitSource({ sourceType });
         const arToolkitContext = new ArToolkitContext({
             cameraParametersUrl,
             detectionMode,
@@ -47,7 +44,7 @@ function _ARProvider({
             matrixCodeType,
         });
 
-        return arToolkitContext; // { arToolkitContext, arToolkitSource };
+        return { arToolkitContext, arToolkitSource };
     }, [
         patternRatio,
         matrixCodeType,
@@ -57,20 +54,35 @@ function _ARProvider({
     ]);
 
     const onResize = useCallback(() => {
+        const { arToolkitContext, arToolkitSource } = arContext;
+
         arToolkitSource.onResizeElement();
         arToolkitSource.copyElementSizeTo(gl.domElement);
-        if (arContext.arController !== null) {
-            arToolkitSource.copyElementSizeTo(arContext.arController.canvas);
-            camera.projectionMatrix.copy(arContext.getProjectionMatrix());
+        if (arToolkitContext.arController !== null) {
+            arToolkitSource.copyElementSizeTo(
+                arToolkitContext.arController.canvas
+            );
+            camera.projectionMatrix.copy(
+                arToolkitContext.getProjectionMatrix()
+            );
         }
     }, [gl, arContext, camera]);
 
     const onUnmount = useCallback(() => {
         window.removeEventListener("resize", onResize);
 
-        arContext.arController.dispose();
-        if (arContext.arController.cameraParam) {
-            arContext.arController.cameraParam.dispose();
+        arContext.arToolkitContext.arController.dispose();
+        if (arContext.arToolkitContext.arController.cameraParam) {
+            arContext.arToolkitContext.arController.cameraParam.dispose();
+        }
+
+        delete arContext.arToolkitContext;
+        delete arContext.arToolkitSource;
+
+        const video = document.querySelector(videoDomElemSelector);
+        if (video) {
+            video.srcObject.getTracks().map((track) => track.stop());
+            video.remove();
         }
     }, [onResize, arContext]);
 
@@ -87,11 +99,15 @@ function _ARProvider({
                 );
 
                 if (video.videoWidth > video.videoHeight) {
-                    arContext.arController.orientation = "landscape";
-                    arContext.arController.options.orientation = "landscape";
+                    arContext.arToolkitContext.arController.orientation =
+                        "landscape";
+                    arContext.arToolkitContext.arController.options.orientation =
+                        "landscape";
                 } else {
-                    arContext.arController.orientation = "portrait";
-                    arContext.arController.options.orientation = "portrait";
+                    arContext.arToolkitContext.arController.orientation =
+                        "portrait";
+                    arContext.arToolkitContext.arController.options.orientation =
+                        "portrait";
                 }
 
                 if (onCameraStreamReady) {
@@ -101,8 +117,10 @@ function _ARProvider({
             };
         }, onCameraStreamError);
 
-        arContext.init(() =>
-            camera.projectionMatrix.copy(arContext.getProjectionMatrix())
+        arContext.arToolkitContext.init(() =>
+            camera.projectionMatrix.copy(
+                arContext.arToolkitContext.getProjectionMatrix()
+            )
         );
 
         window.addEventListener("resize", onResize);
@@ -126,11 +144,16 @@ function _ARProvider({
             arContext.arToolkitSource &&
             arContext.arToolkitSource.ready !== false
         ) {
-            arContext.update(arContext.arToolkitSource.domElement);
+            arContext.arToolkitContext.update(
+                arContext.arToolkitSource.domElement
+            );
         }
     });
 
-    const value = useMemo(() => ({ arToolkitContext: arContext }), [arContext]);
+    const value = useMemo(
+        () => ({ arToolkitContext: arContext.arToolkitContext }),
+        [arContext]
+    );
 
     return <ARContext.Provider value={value}>{children}</ARContext.Provider>;
 }

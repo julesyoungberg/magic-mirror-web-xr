@@ -1,3 +1,4 @@
+// adapted from https://github.com/artcom/react-three-arjs/blob/main/src/ar/arMarker.js
 /* eslint-disable import/named */
 /* eslint-disable no-underscore-dangle */
 import { ArMarkerControls } from "@ar-js-org/ar.js/three.js/build/ar-threex";
