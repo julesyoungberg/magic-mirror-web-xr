@@ -3,159 +3,108 @@
 import { ArToolkitContext } from "@ar-js-org/ar.js/three.js/build/ar-threex";
 import { useFrame, useThree } from "@react-three/fiber";
 import React, { createContext, useCallback, useEffect, useMemo } from "react";
-import ArToolkitSource from "./Source";
+import { ARSourceProivder } from "./ARSourceProvider";
+import Source, { SourceParameters } from "./Source";
 
-export const ARContext = createContext<{ arToolkitContext?: ArToolkitContext }>(
-    {}
-);
-
-const videoDomElemSelector = "#arjs-video";
+export const ARContext = createContext<ArToolkitContext | null>(null);
 
 export type Props = React.PropsWithChildren<{
     tracking?: boolean;
-    sourceType: string;
     patternRatio: number;
     matrixCodeType: string;
     detectionMode: string;
     cameraParametersUrl: string;
     onCameraStreamReady: () => void;
     onCameraStreamError: () => void;
+    sourceParams: SourceParameters;
 }>;
 
 function _ARProvider({
     tracking = true,
     children,
-    sourceType,
     patternRatio,
     matrixCodeType,
     detectionMode,
     cameraParametersUrl,
     onCameraStreamReady,
     onCameraStreamError,
+    sourceParams,
 }: Props) {
     const { gl, camera } = useThree();
 
     const arContext = useMemo(() => {
-        const arToolkitSource = new ArToolkitSource({ sourceType });
-        const arToolkitContext = new ArToolkitContext({
+        return new ArToolkitContext({
             cameraParametersUrl,
             detectionMode,
             patternRatio,
             matrixCodeType,
         });
-
-        return { arToolkitContext, arToolkitSource };
-    }, [
-        patternRatio,
-        matrixCodeType,
-        cameraParametersUrl,
-        detectionMode,
-        sourceType,
-    ]);
-
-    const onResize = useCallback(() => {
-        const { arToolkitContext, arToolkitSource } = arContext;
-
-        arToolkitSource.onResizeElement();
-        arToolkitSource.copyElementSizeTo(gl.domElement);
-        if (arToolkitContext.arController !== null) {
-            arToolkitSource.copyElementSizeTo(
-                arToolkitContext.arController.canvas
-            );
-            camera.projectionMatrix.copy(
-                arToolkitContext.getProjectionMatrix()
-            );
-        }
-    }, [gl, arContext, camera]);
-
-    const onUnmount = useCallback(() => {
-        window.removeEventListener("resize", onResize);
-
-        arContext.arToolkitContext.arController.dispose();
-        if (arContext.arToolkitContext.arController.cameraParam) {
-            arContext.arToolkitContext.arController.cameraParam.dispose();
-        }
-
-        delete arContext.arToolkitContext;
-        delete arContext.arToolkitSource;
-
-        const video = document.querySelector(videoDomElemSelector);
-        if (video) {
-            video.srcObject.getTracks().map((track) => track.stop());
-            video.remove();
-        }
-    }, [onResize, arContext]);
+    }, [patternRatio, matrixCodeType, cameraParametersUrl, detectionMode]);
 
     useEffect(() => {
-        arContext.arToolkitSource.init(() => {
-            const video = document.querySelector(videoDomElemSelector);
-            video.style.position = "fixed";
-
-            video.onloadedmetadata = () => {
-                console.log(
-                    "actual source dimensions",
-                    video.videoWidth,
-                    video.videoHeight
-                );
-
-                if (video.videoWidth > video.videoHeight) {
-                    arContext.arToolkitContext.arController.orientation =
-                        "landscape";
-                    arContext.arToolkitContext.arController.options.orientation =
-                        "landscape";
-                } else {
-                    arContext.arToolkitContext.arController.orientation =
-                        "portrait";
-                    arContext.arToolkitContext.arController.options.orientation =
-                        "portrait";
-                }
-
-                if (onCameraStreamReady) {
-                    onCameraStreamReady();
-                }
-                onResize();
-            };
-        }, onCameraStreamError);
-
-        arContext.arToolkitContext.init(() =>
-            camera.projectionMatrix.copy(
-                arContext.arToolkitContext.getProjectionMatrix()
-            )
+        arContext.init(() =>
+            camera.projectionMatrix.copy(arContext.getProjectionMatrix())
         );
 
-        window.addEventListener("resize", onResize);
+        return () => {
+            arContext.arController.dispose();
+            if (arContext.arController.cameraParam) {
+                arContext.arController.cameraParam.dispose();
+            }
+        };
+    }, [arContext, camera]);
 
-        return onUnmount;
-    }, [
-        arContext,
-        camera,
-        onCameraStreamReady,
-        onCameraStreamError,
-        onResize,
-        onUnmount,
-    ]);
+    const wrappedOnCameraStreamReady = useCallback(
+        (video: HTMLVideoElement) => {
+            if (video.videoWidth > video.videoHeight) {
+                arContext.arController.orientation = "landscape";
+                arContext.arController.options.orientation = "landscape";
+            } else {
+                arContext.arController.orientation = "portrait";
+                arContext.arController.options.orientation = "portrait";
+            }
+        },
+        [arContext, onCameraStreamReady]
+    );
 
-    useFrame(() => {
-        if (!tracking) {
-            return;
-        }
+    const onResize = useCallback(
+        (arSource: Source) => {
+            if (!arContext.arController) {
+                return;
+            }
 
-        if (
-            arContext.arToolkitSource &&
-            arContext.arToolkitSource.ready !== false
-        ) {
-            arContext.arToolkitContext.update(
-                arContext.arToolkitSource.domElement
-            );
-        }
-    });
+            arSource.copyElementSizeTo(arContext.arController.canvas);
+            camera.projectionMatrix.copy(arContext.getProjectionMatrix());
+        },
+        [gl, arContext, camera]
+    );
 
-    const value = useMemo(
-        () => ({ arToolkitContext: arContext.arToolkitContext }),
+    const onFrame = useCallback(
+        (arSource: Source) => {
+            if (!tracking) {
+                return;
+            }
+
+            if (arSource.ready !== false && arSource.domElement) {
+                arContext.update(arSource.domElement);
+            }
+        },
         [arContext]
     );
 
-    return <ARContext.Provider value={value}>{children}</ARContext.Provider>;
+    return (
+        <ARSourceProivder
+            onCameraStreamError={onCameraStreamError}
+            onCameraStreamReady={wrappedOnCameraStreamReady}
+            onFrame={onFrame}
+            onResize={onResize}
+            params={sourceParams}
+        >
+            <ARContext.Provider value={arContext}>
+                {children}
+            </ARContext.Provider>
+        </ARSourceProivder>
+    );
 }
 
 export const ARProvider = React.memo(_ARProvider);

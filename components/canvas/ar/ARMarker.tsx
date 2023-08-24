@@ -26,7 +26,7 @@ export function ARMarker({
     onMarkerLost,
 }: Props) {
     const markerRoot = useRef<THREE.Group | null>(null);
-    const { arToolkitContext } = useAR();
+    const arToolkitContext = useAR();
     const [isFound, setIsFound] = useState(false);
 
     useEffect(() => {

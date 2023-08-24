@@ -1,3 +1,4 @@
+/** @todo move this somewhere outside of compoennts */
 import { ArToolkitContext } from "@ar-js-org/ar.js/three.js/build/ar-threex";
 
 export function isVideoElement(

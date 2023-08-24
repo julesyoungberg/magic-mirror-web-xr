@@ -1,17 +1,17 @@
-import { ArToolkitContext } from "@ar-js-org/ar.js/three.js/build/ar-threex";
 import { useFrame, useThree } from "@react-three/fiber";
 import React, { createContext, useCallback, useEffect, useMemo } from "react";
 import ARSource, { SourceParameters, isVideoElement } from "./Source";
+import Source from "./Source";
 
-export const ARSourceContext = createContext<{
-    arSource?: ARSource;
-}>({});
+export const ARSourceContext = createContext<ARSource | null>(null);
 
 const videoDomElemSelector = "#arjs-video";
 
 type Props = {
-    onCameraStreamReady: () => void;
+    onCameraStreamReady?: (video: HTMLVideoElement) => void;
     onCameraStreamError: () => void;
+    onFrame?: (source: Source) => void;
+    onResize?: (source: Source) => void;
     params: SourceParameters;
 };
 
@@ -19,6 +19,8 @@ function _ARSourceProvider({
     children,
     onCameraStreamReady,
     onCameraStreamError,
+    onFrame,
+    onResize: onResizeCallback,
     params,
 }: React.PropsWithChildren<Props>) {
     const { gl, camera } = useThree();
@@ -27,14 +29,17 @@ function _ARSourceProvider({
     const onResize = useCallback(() => {
         arSource.onResizeElement();
         arSource.copyElementSizeTo(gl.domElement);
-    }, [arSource, gl.domElement]);
+        onResizeCallback?.(arSource);
+    }, [arSource, gl.domElement, onResizeCallback]);
 
     const onUnmount = useCallback(() => {
         window.removeEventListener("resize", onResize);
 
         const video = document.querySelector(videoDomElemSelector);
         if (video) {
-            video.srcObject.getTracks().map((track) => track.stop());
+            (video as any).srcObject
+                ?.getTracks()
+                .map((track: any) => track.stop());
             video.remove();
         }
     }, [onResize]);
@@ -56,7 +61,7 @@ function _ARSourceProvider({
                 );
 
                 if (onCameraStreamReady) {
-                    onCameraStreamReady();
+                    onCameraStreamReady(video);
                 }
 
                 onResize();
@@ -74,6 +79,10 @@ function _ARSourceProvider({
         onResize,
         onUnmount,
     ]);
+
+    useFrame(() => {
+        onFrame?.(arSource);
+    });
 
     return (
         <ARSourceContext.Provider value={arSource}>
