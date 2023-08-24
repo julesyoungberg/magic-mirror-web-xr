@@ -13,7 +13,7 @@ import { Canvas } from "./Canvas";
 export default function Scene() {
     const scene = DEFAULT_SCENE;
     // @todo check for support
-    const supportsXR = true;
+    const supportsXR = false; // true;
 
     return (
         <div style={{ width: "100%", aspectRatio: 16 / 9 }}>
