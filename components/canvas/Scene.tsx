@@ -1,6 +1,7 @@
 "use client";
 
 import { ARButton } from "@react-three/xr";
+import { Suspense } from "react";
 
 import ConditionalWrapper from "../helpers/ConditionalWrapper";
 import XRWrapper from "./XRWrapper";
@@ -26,8 +27,10 @@ export default function Scene() {
                             <XRWrapper>{children}</XRWrapper>
                         )}
                     >
-                        <SceneInner scene={scene} />
-                        <FrameProcessor scene={scene} />
+                        <Suspense>
+                            <SceneInner scene={scene} />
+                            <FrameProcessor scene={scene} />
+                        </Suspense>
                     </ConditionalWrapper>
                 </WebcamProvider>
             </Canvas>

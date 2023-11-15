@@ -2,63 +2,9 @@ import * as THREE from "three";
 import React, { useEffect, useMemo } from "react";
 import { useGLTF } from "@/hooks/useGLTF";
 import { useThree } from "@react-three/fiber";
-import { useFaceLandmarks } from "@/hooks/useFaceLandmarks";
+import { blendshapesMap, useFaceLandmarks } from "@/hooks/useFaceLandmarks";
 import { useWebcam } from "@/hooks/useWebcam";
 import { Background } from "../Background";
-
-const blendshapesMap = {
-    browDownLeft: "browDown_L",
-    browDownRight: "browDown_R",
-    browInnerUp: "browInnerUp",
-    browOuterUpLeft: "browOuterUp_L",
-    browOuterUpRight: "browOuterUp_R",
-    cheekPuff: "cheekPuff",
-    cheekSquintLeft: "cheekSquint_L",
-    cheekSquintRight: "cheekSquint_R",
-    eyeBlinkLeft: "eyeBlink_L",
-    eyeBlinkRight: "eyeBlink_R",
-    eyeLookDownLeft: "eyeLookDown_L",
-    eyeLookDownRight: "eyeLookDown_R",
-    eyeLookInLeft: "eyeLookIn_L",
-    eyeLookInRight: "eyeLookIn_R",
-    eyeLookOutLeft: "eyeLookOut_L",
-    eyeLookOutRight: "eyeLookOut_R",
-    eyeLookUpLeft: "eyeLookUp_L",
-    eyeLookUpRight: "eyeLookUp_R",
-    eyeSquintLeft: "eyeSquint_L",
-    eyeSquintRight: "eyeSquint_R",
-    eyeWideLeft: "eyeWide_L",
-    eyeWideRight: "eyeWide_R",
-    jawForward: "jawForward",
-    jawLeft: "jawLeft",
-    jawOpen: "jawOpen",
-    jawRight: "jawRight",
-    mouthClose: "mouthClose",
-    mouthDimpleLeft: "mouthDimple_L",
-    mouthDimpleRight: "mouthDimple_R",
-    mouthFrownLeft: "mouthFrown_L",
-    mouthFrownRight: "mouthFrown_R",
-    mouthFunnel: "mouthFunnel",
-    mouthLeft: "mouthLeft",
-    mouthLowerDownLeft: "mouthLowerDown_L",
-    mouthLowerDownRight: "mouthLowerDown_R",
-    mouthPressLeft: "mouthPress_L",
-    mouthPressRight: "mouthPress_R",
-    mouthPucker: "mouthPucker",
-    mouthRight: "mouthRight",
-    mouthRollLower: "mouthRollLower",
-    mouthRollUpper: "mouthRollUpper",
-    mouthShrugLower: "mouthShrugLower",
-    mouthShrugUpper: "mouthShrugUpper",
-    mouthSmileLeft: "mouthSmile_L",
-    mouthSmileRight: "mouthSmile_R",
-    mouthStretchLeft: "mouthStretch_L",
-    mouthStretchRight: "mouthStretch_R",
-    mouthUpperUpLeft: "mouthUpperUp_L",
-    mouthUpperUpRight: "mouthUpperUp_R",
-    noseSneerLeft: "noseSneer_L",
-    noseSneerRight: "noseSneer_R",
-};
 
 // based on https://github.com/mrdoob/three.js/blob/master/examples/webgl_morphtargets_webcam.html
 export function FaceMeshDemo() {
