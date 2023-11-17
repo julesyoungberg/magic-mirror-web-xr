@@ -35,17 +35,14 @@ export function InstanceGroup({
             new Array(maxShapes).fill(0).map((_, i) => ({
                 key: `shape_${i}`,
                 live: false,
-                position: [Math.random() * 10 - 5, -5, Math.random() * 6 - 3],
+                position: [Math.random() * 10 - 5, -10, Math.random() * 6 - 3],
                 scale: [0.5, 0.5, 0.5],
                 rotation: [1, 0, 0], // Math.random(), Math.random(), Math.random()],
             })),
         []
     );
 
-    console.log("InstanceGroup");
-
     useFrame(() => {
-        console.log({ faceDetected });
         let resetNShapes = 0;
         if (faceDetected) {
             resetNShapes = newShapesRate;

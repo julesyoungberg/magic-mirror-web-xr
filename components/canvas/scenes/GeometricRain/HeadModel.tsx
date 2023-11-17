@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import React, { useEffect, useLayoutEffect } from "react";
+import React, { useLayoutEffect } from "react";
 import { useGLTF } from "@/hooks/useGLTF";
 
 const material = new THREE.MeshNormalMaterial();

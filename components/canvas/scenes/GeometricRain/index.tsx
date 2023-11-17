@@ -1,4 +1,3 @@
-// @todo falling shapes with physics
 import * as THREE from "three";
 import React, { useMemo, useRef, useState } from "react";
 import { blendshapesMap, useFaceLandmarks } from "@/hooks/useFaceLandmarks";
@@ -10,7 +9,7 @@ import { HeadModel } from "./HeadModel";
 import { InstanceGroup } from "./InstanceGroup";
 
 // number of shapes to create each frame
-const N_SHAPES = 100;
+const N_SHAPES = 3;
 const MAX_SHAPES = 200;
 
 const tempColor = new THREE.Color();
@@ -19,6 +18,12 @@ const data = Array.from({ length: MAX_SHAPES }, () => ({
     scale: 1,
 }));
 
+/**
+ * @todo
+ * - Add physics to the head
+ * - render segmentated sillouhette in space so some shapes go behind
+ * - add other shape types
+ */
 export function GeometricRain() {
     const webcam = useWebcam();
     const [faceDetected, setFaceDetected] = useState(false);
@@ -46,13 +51,13 @@ export function GeometricRain() {
                 transform.quaternion,
                 transform.scale
             );
-            if (headMeshRef.current) {
-                headMeshRef.current.position.x = transform.position.x;
-                headMeshRef.current.position.y = transform.position.z + 40;
-                headMeshRef.current.position.z = -transform.position.y;
-                headMeshRef.current.rotation.x = transform.rotation.x;
-                headMeshRef.current.rotation.y = transform.rotation.z;
-                headMeshRef.current.rotation.z = -transform.rotation.y;
+            if (headGroupRef.current) {
+                headGroupRef.current.position.x = transform.position.x;
+                headGroupRef.current.position.y = transform.position.z + 40;
+                headGroupRef.current.position.z = -transform.position.y;
+                headGroupRef.current.rotation.x = transform.rotation.x;
+                headGroupRef.current.rotation.y = transform.rotation.z;
+                headGroupRef.current.rotation.z = -transform.rotation.y;
             }
         }
 
@@ -89,22 +94,20 @@ export function GeometricRain() {
         <Physics gravity={[0, -9.8, 0]} interpolate={false} colliders={false}>
             {webcam && <Background texture={webcam.texture} />}
             <HeadModel groupRef={headGroupRef} meshRef={headMeshRef} />
-            {faceDetected.current && (
-                <InstanceGroup
-                    faceDetected={faceDetected.current}
-                    maxShapes={MAX_SHAPES}
-                    newShapesRate={N_SHAPES}
-                >
-                    <boxGeometry>
-                        <instancedBufferAttribute
-                            attach="attributes-color"
-                            args={[colorArray, 3]}
-                        />
-                    </boxGeometry>
-                    <meshBasicMaterial toneMapped={false} vertexColors />
-                </InstanceGroup>
-            )}
-            <pointLight castShadow />
+            <InstanceGroup
+                faceDetected={faceDetected}
+                maxShapes={MAX_SHAPES}
+                newShapesRate={N_SHAPES}
+            >
+                <boxGeometry>
+                    <instancedBufferAttribute
+                        attach="attributes-color"
+                        args={[colorArray, 3]}
+                    />
+                </boxGeometry>
+                <meshBasicMaterial toneMapped={false} vertexColors />
+            </InstanceGroup>
+            <pointLight position={[0, 10, 0]} castShadow />
         </Physics>
     );
 }
