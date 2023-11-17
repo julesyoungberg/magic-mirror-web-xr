@@ -23,7 +23,7 @@ export function Gravity() {
     const colorArray = useMemo(
         () =>
             Float32Array.from(
-                new Array(MAX_SHAPES)
+                new Array(N_SHAPES)
                     .fill(0)
                     .flatMap((_, i) => tempColor.set(data[i].color).toArray())
             ),

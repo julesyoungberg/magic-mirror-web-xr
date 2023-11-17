@@ -3,6 +3,10 @@ import React, { ReactNode, useMemo, useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import { InstancedRigidBodies, RapierRigidBody } from "@react-three/rapier";
 
+const SHAPE_MASS = 0.01;
+const HEAD_MASS = 1.0;
+const G = 6.673 * Math.pow(10, -11);
+
 type Props = {
     children: ReactNode;
     facePosition?: [number, number, number];
@@ -37,7 +41,22 @@ export function InstanceGroup({ children, facePosition, nShapes }: Props) {
 
             const position = rigidBody.translation();
 
-            /** @todo calculate the gravity from the head and apply force to rigid body */
+            const diffVector = new THREE.Vector3().subVectors(
+                new THREE.Vector3(position.x, position.y, position.z),
+                new THREE.Vector3(...facePosition)
+            );
+
+            const distance = diffVector.length();
+
+            const forceMag =
+                (G * HEAD_MASS * SHAPE_MASS) / Math.pow(distance, 2);
+
+            diffVector.normalize();
+            diffVector.multiplyScalar(forceMag);
+
+            rigidBody.applyImpulse(diffVector, true);
+
+            /** @todo maybe? */
             /** apply inverse gravity force */
             /** reset offscreen shapes */
         }
