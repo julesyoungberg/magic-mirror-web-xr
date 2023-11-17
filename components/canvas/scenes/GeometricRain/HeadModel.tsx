@@ -1,3 +1,8 @@
+/**
+ * attempt to load the head model into this environment
+ * ex: https://codesandbox.io/p/github/JI0PATA/fps-game/master?file=%2Fsrc%2FWeaponModel.jsx%3A1%2C1-2%2C45
+ */
+
 import * as THREE from "three";
 import React, { useLayoutEffect } from "react";
 import { useGLTF } from "@/hooks/useGLTF";

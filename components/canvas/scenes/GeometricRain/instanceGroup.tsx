@@ -19,7 +19,6 @@ type Props = {
     newShapesRate: number;
 };
 
-// currently works on hot reload but not on initial load of the page
 export function InstanceGroup({
     children,
     faceDetected,
@@ -96,6 +95,8 @@ export function InstanceGroup({
                 ref={instancedMeshRef}
                 args={[null as any, null as any, maxShapes]}
                 count={maxShapes}
+                castShadow
+                receiveShadow
             >
                 {children}
             </instancedMesh>
