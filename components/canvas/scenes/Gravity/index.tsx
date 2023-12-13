@@ -1,3 +1,4 @@
+/** WIP: shapes floating around heads */
 import * as THREE from "three";
 import { useWebcam } from "@/hooks/useWebcam";
 import { useMemo, useState } from "react";
@@ -6,6 +7,7 @@ import { Physics } from "@react-three/rapier";
 import { Background } from "../../Background";
 import niceColors from "nice-color-palettes";
 import { InstanceGroup } from "./InstanceGroup";
+import { useSegmentation } from "@/hooks/useSegmentation";
 
 const N_SHAPES = 3;
 
@@ -15,7 +17,9 @@ const data = Array.from({ length: N_SHAPES }, () => ({
     scale: 1,
 }));
 
+/** @todo render segmented sillouhette at face z position */
 export function Gravity() {
+    const webcamSegmentation = useSegmentation();
     const webcam = useWebcam();
     const [facePosition, setFacePosition] = useState<
         [number, number, number] | undefined
@@ -52,7 +56,19 @@ export function Gravity() {
     return (
         <Physics gravity={[0, 0, 0]} interpolate={false} colliders={false}>
             {webcam && <Background texture={webcam.texture} />}
-            <InstanceGroup facePosition={facePosition} nShapes={N_SHAPES}>
+            {/** rendering the segmentation mask overtop of the background creates a lot of artifacts.
+             * It could also be used as a look up table for manually hiding individual objects.
+             */}
+            {webcamSegmentation && (
+                <mesh position={[0, 0, 0]} scale={[1, 1, 1]}>
+                    <planeGeometry args={[8.2, 7.7]} />
+                    <meshBasicMaterial
+                        map={webcamSegmentation.texture}
+                        transparent
+                    />
+                </mesh>
+            )}
+            {/*<InstanceGroup facePosition={facePosition} nShapes={N_SHAPES}>
                 <boxGeometry>
                     <instancedBufferAttribute
                         attach="attributes-color"
@@ -60,7 +76,7 @@ export function Gravity() {
                     />
                 </boxGeometry>
                 <meshBasicMaterial toneMapped={false} vertexColors />
-            </InstanceGroup>
+        </InstanceGroup>*/}
         </Physics>
     );
 }
