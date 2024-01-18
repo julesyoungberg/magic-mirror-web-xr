@@ -19,7 +19,7 @@ export function useHolisticDebug() {
                 canvasTexture.canvas.width,
                 canvasTexture.canvas.height
             );
-            if (webcam?.canvas) {
+            if (webcam.canvas) {
                 canvasTexture.canvasCtx.drawImage(
                     webcam.canvas,
                     0,

@@ -6,19 +6,21 @@ export type OffscreenShaderSceneConfig = {
     width: number;
     height: number;
     shaderMaterial: THREE.ShaderMaterial;
+    renderPriority?: number;
 };
 
 export function useOffscreenShaderScene({
     width,
     height,
     shaderMaterial,
+    renderPriority,
 }: OffscreenShaderSceneConfig) {
     const shaderScene = useMemo(() => {
         //canvas for shader
         const canvas = document.createElement("canvas");
         canvas.width = width;
         canvas.height = height;
-        const ctxShader = canvas.getContext("experimental-webgl", {
+        const ctxShader = canvas.getContext("webgl2", {
             preserveDrawingBuffer: true,
         });
 
@@ -44,17 +46,22 @@ export function useOffscreenShaderScene({
         );
         scene.add(planeShader);
 
+        const texture = new THREE.Texture(canvas);
+        texture.colorSpace = THREE.SRGBColorSpace;
+
         return {
             canvas,
             renderer,
             scene,
             camera,
+            texture,
         };
     }, [width, height, shaderMaterial]);
 
     useFrame(() => {
         shaderScene.renderer.render(shaderScene.scene, shaderScene.camera);
-    });
+        shaderScene.texture.needsUpdate = true;
+    }, renderPriority);
 
     return shaderScene;
 }

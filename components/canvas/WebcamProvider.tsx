@@ -28,7 +28,7 @@ export type Webcam = CanvasTexture & {
     video: HTMLVideoElement;
 };
 
-export const WebcamContext = React.createContext<Webcam | null>(null);
+export const WebcamContext = React.createContext<Webcam>(null!);
 
 type Props = React.PropsWithChildren<{}>;
 
@@ -42,6 +42,7 @@ export default function WebcamProvider({ children }: Props) {
 
     useFrame(() => {
         if (webcam.video.readyState === webcam.video.HAVE_ENOUGH_DATA) {
+            // write current frame
             webcam.canvasCtx.scale(-1, 1);
             webcam.canvasCtx.drawImage(
                 webcam.video,

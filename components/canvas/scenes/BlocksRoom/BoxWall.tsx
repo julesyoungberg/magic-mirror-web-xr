@@ -21,7 +21,7 @@ export function BoxWall({
 }: Props) {
     const webcam = useWebcam();
     const downsampledWebcam = useDownsamplingCanvas(
-        webcam?.canvas,
+        webcam.canvas,
         columns,
         rows
     );

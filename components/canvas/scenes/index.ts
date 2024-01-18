@@ -7,6 +7,7 @@ import { SegmentationDemo } from "./SegmentationDemo";
 import { GeometricRain } from "./GeometricRain";
 import { Gravity } from "./Gravity";
 import { DeepDream } from "./DeepDream";
+import { OpticalFlowDemo } from "./OpticalFlowDemo";
 
 export const SCENES = {
     ar_demo: ARDemo,
@@ -18,8 +19,9 @@ export const SCENES = {
     segmentation_demo: SegmentationDemo,
     blocks: BlocksRoom,
     deep_dream: DeepDream,
+    optical_flow_demo: OpticalFlowDemo,
 };
 
 export type Scene = keyof typeof SCENES;
 
-export const DEFAULT_SCENE: Scene = "deep_dream";
+export const DEFAULT_SCENE: Scene = "optical_flow_demo";
