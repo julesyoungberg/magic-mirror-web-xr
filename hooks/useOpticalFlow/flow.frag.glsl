@@ -2,6 +2,8 @@
  * Optical flow fragment shader, for convenience.
  *
  * @see ./index.frag
+ *
+ * from: https://github.com/keeffEoghan/glsl-optical-flow/blob/master/index.frag.glsl
  */
 
 #define opticalFlowMap
@@ -25,7 +27,6 @@ uniform vec2 speed;
 
 varying vec2 vUv;
 
-// #pragma glslify: opticalFlow = require(@epok.tech/glsl-optical-flow)
 #pragma glslify: opticalFlow = require(./optical-flow)
 
 void main() {
@@ -36,9 +37,10 @@ void main() {
 
   // Optionally map the flow ([-1, 1]) to a different range (e.g: [0, 1]).
   #ifdef opticalFlowMap
-    flow = map(flow, inRange.xy, inRange.zw, outRange.xy, outRange.zw);
+  flow = map(flow, inRange.xy, inRange.zw, outRange.xy, outRange.zw);
   #endif
 
   gl_FragColor = vec4(flow, power, clamp(power*alpha, 0.0, 1.0));
-//   gl_FragColor = vec4(vUv.xy, 0.9, 1.0);
+  // vec3 color = texture2D(next, vUv).rgb - texture2D(prev, vUv).rgb;
+  // gl_FragColor = vec4(color, 1.0);
 }

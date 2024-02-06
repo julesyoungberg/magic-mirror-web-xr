@@ -1,7 +1,7 @@
 "use client";
 
 import { ARButton } from "@react-three/xr";
-import { Suspense } from "react";
+import { Suspense, useEffect, useState } from "react";
 
 import ConditionalWrapper from "../helpers/ConditionalWrapper";
 import XRWrapper from "./XRWrapper";
@@ -15,6 +15,15 @@ export default function Scene() {
     const scene = DEFAULT_SCENE;
     // @todo check for support
     const supportsXR = false; // true;
+    const [mounted, setMounted] = useState(false);
+
+    useEffect(() => {
+        setMounted(typeof window !== "undefined");
+    }, []);
+
+    if (!mounted) {
+        return null;
+    }
 
     return (
         <div style={{ width: "100vw", height: "100vh" }}>

@@ -7,6 +7,8 @@ export type OffscreenShaderSceneConfig = {
     height: number;
     shaderMaterial: THREE.ShaderMaterial;
     renderPriority?: number;
+    onRender?: (renderer: THREE.WebGLRenderer) => void;
+    renderAutomatically?: boolean;
 };
 
 export function useOffscreenShaderScene({
@@ -14,6 +16,8 @@ export function useOffscreenShaderScene({
     height,
     shaderMaterial,
     renderPriority,
+    onRender,
+    renderAutomatically,
 }: OffscreenShaderSceneConfig) {
     const shaderScene = useMemo(() => {
         //canvas for shader
@@ -55,12 +59,20 @@ export function useOffscreenShaderScene({
             scene,
             camera,
             texture,
+            render: () => {
+                renderer.render(scene, camera);
+                texture.needsUpdate = true;
+                onRender?.(shaderScene.renderer);
+            },
         };
     }, [width, height, shaderMaterial]);
 
     useFrame(() => {
-        shaderScene.renderer.render(shaderScene.scene, shaderScene.camera);
-        shaderScene.texture.needsUpdate = true;
+        if (!renderAutomatically) {
+            return;
+        }
+
+        shaderScene.render();
     }, renderPriority);
 
     return shaderScene;
