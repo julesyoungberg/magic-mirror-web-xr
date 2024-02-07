@@ -9,6 +9,7 @@ export type OffscreenShaderSceneConfig = {
     renderPriority?: number;
     onRender?: (renderer: THREE.WebGLRenderer) => void;
     renderAutomatically?: boolean;
+    disabled?: boolean;
 };
 
 export function useOffscreenShaderScene({
@@ -18,8 +19,17 @@ export function useOffscreenShaderScene({
     renderPriority,
     onRender,
     renderAutomatically,
+    disabled,
 }: OffscreenShaderSceneConfig) {
     const shaderScene = useMemo(() => {
+        if (disabled) {
+            return {
+                clear() {},
+                render() {},
+                renderTo() {},
+            };
+        }
+
         //canvas for shader
         const canvas = document.createElement("canvas");
         canvas.width = width;
@@ -31,7 +41,7 @@ export function useOffscreenShaderScene({
         //renderer
         const renderer = new THREE.WebGLRenderer({
             canvas: canvas,
-            context: ctxShader,
+            context: ctxShader as any,
             antialias: true,
             preserveDrawingBuffer: true,
         });
@@ -40,7 +50,7 @@ export function useOffscreenShaderScene({
 
         const scene = new THREE.Scene();
         const camera = new THREE.OrthographicCamera();
-        camera.position.set(0, 0, 70);
+        camera.position.set(0, 0, 1);
         camera.lookAt(0, 0, 0);
 
         //draw quad
@@ -53,26 +63,66 @@ export function useOffscreenShaderScene({
         const texture = new THREE.Texture(canvas);
         texture.colorSpace = THREE.SRGBColorSpace;
 
+        function clear() {
+            renderer.clear(true, true, true);
+            // (renderer.clear as any)([0, 0, 0, 1], 1, 0);
+        }
+
+        function render() {
+            renderer.render(scene, camera);
+            texture.needsUpdate = true;
+            onRender?.(renderer);
+        }
+
+        function renderTo({
+            shaderMaterial,
+            to,
+            uniforms = {},
+        }: {
+            shaderMaterial: THREE.ShaderMaterial;
+            to: THREE.WebGLRenderTarget;
+            uniforms?: Record<string, any>;
+        }) {
+            shaderMaterial.uniforms = {
+                ...shaderMaterial.uniforms,
+                ...Object.fromEntries(
+                    Object.entries(uniforms).map(([key, value]) => [
+                        key,
+                        { value },
+                    ])
+                ),
+            };
+
+            planeShader.material = shaderMaterial;
+
+            renderer.setRenderTarget(to);
+
+            clear();
+
+            render();
+
+            to.texture.needsUpdate = true;
+        }
+
         return {
             canvas,
             renderer,
             scene,
             camera,
             texture,
-            render: () => {
-                renderer.render(scene, camera);
-                texture.needsUpdate = true;
-                onRender?.(shaderScene.renderer);
-            },
+            planeShader,
+            clear,
+            render,
+            renderTo,
         };
-    }, [width, height, shaderMaterial]);
+    }, [disabled, width, height, shaderMaterial]);
 
     useFrame(() => {
         if (!renderAutomatically) {
             return;
         }
 
-        shaderScene.render();
+        shaderScene?.render();
     }, renderPriority);
 
     return shaderScene;

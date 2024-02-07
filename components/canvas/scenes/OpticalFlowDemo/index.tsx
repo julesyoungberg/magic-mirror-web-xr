@@ -8,7 +8,9 @@ export function OpticalFlowDemo() {
 
     return (
         <>
-            <Background texture={opticalFlow.texture} />
+            {opticalFlow.texture && (
+                <Background texture={opticalFlow.texture} />
+            )}
             <pointLight position={[0, 10, 0]} castShadow />
         </>
     );
