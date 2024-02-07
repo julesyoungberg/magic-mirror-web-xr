@@ -94,14 +94,14 @@ export function useOffscreenShaderScene({
             };
 
             planeShader.material = shaderMaterial;
+            planeShader.material.needsUpdate = true;
+            to.texture.needsUpdate = true;
 
             renderer.setRenderTarget(to);
 
             clear();
 
             render();
-
-            to.texture.needsUpdate = true;
         }
 
         return {
