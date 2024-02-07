@@ -7,7 +7,7 @@ import { SegmentationDemo } from "./SegmentationDemo";
 import { GeometricRain } from "./GeometricRain";
 import { Gravity } from "./Gravity";
 import { DeepDream } from "./DeepDream";
-import { OpticalFlowDemo } from "./OpticalFlowDemo";
+import { OpticalFlowDemo } from "./OpticalFlowGPUDemo";
 
 export const SCENES = {
     ar_demo: ARDemo,

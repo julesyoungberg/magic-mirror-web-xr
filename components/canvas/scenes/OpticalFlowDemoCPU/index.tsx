@@ -1,9 +1,8 @@
-// based on https://github.com/keeffEoghan/glsl-optical-flow/blob/master/index.frag.glsl
-import { useOpticalFlow } from "@/hooks/useOpticalFlow";
+import { useOpticalFlow } from "@/hooks/useOpticalFlowCPU";
 
 import { Background } from "../../Background";
 
-export function OpticalFlowDemo() {
+export function OpticalFlowCPUDemo() {
     const opticalFlow = useOpticalFlow({});
 
     return (
